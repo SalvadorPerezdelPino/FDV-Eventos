@@ -72,3 +72,19 @@ private void OnTriggerEnter2D(Collider2D other)
 Con estas tres mejoras, el resultado queda así:
 
 ![UI](./Media/GoldSpeedAndHealth.gif)
+
+> Agregar un personaje a la escena que, al hacer clic sobre un botón específico de la UI, se dirija progresivamente en el espacio 2D hacia su guarida que estará posicionada en la escena
+
+En este caso, en vez de asignar la función directamente al `OnClick()` del botón, utilizamos un notificador en conjunto de los eventos de Unity.
+Para ello, creo un ButtonHandler que tenga la notificación. En el lado del enemigo, se procede a escuchar dicha notificación. Al pulsar el botón, el `onClick` enlazado llama a `NotifyCastleBack()`
+
+```cs
+public void NotifyCastleBack()
+{
+    onCastleBack.Invoke();
+}
+```
+
+Para mover el personaje se reutiliza código del movimiento rectilíneo. En este caso, lo que se propone es que el objetivo inicial sea el propio enemigo, de manera que no se mueva. Al pulsar el botón, el transform objetivo pasa a ser el del castillo. El resultado se ve de esta manera:
+
+![Castle button](./Media/CastleButton.gif)
