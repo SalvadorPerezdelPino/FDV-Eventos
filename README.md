@@ -88,3 +88,34 @@ public void NotifyCastleBack()
 Para mover el personaje se reutiliza código del movimiento rectilíneo. En este caso, lo que se propone es que el objetivo inicial sea el propio enemigo, de manera que no se mueva. Al pulsar el botón, el transform objetivo pasa a ser el del castillo. El resultado se ve de esta manera:
 
 ![Castle button](./Media/CastleButton.gif)
+
+> Agregar a la escena un objeto recolectable que, al colisionar con el jugador, dispare un evento que haga que otros dos objetos en la escena realicen las siguientes acciones simultáneamente:
+Objeto A: Comienza a desplazarse de forma fluida hacia la posición actual del jugador.
+Objeto B: Se posiciona o traslada de forma inmediata a un punto fijo determinado dentro de la escena.
+
+Para lograr esto, se han colocado tres objetos: un tronco, un filete y una oveja. El filete va a ser el notificador del evento, mientras que el tronco y la oveja escucharán y harán acciones distintas.
+Por un lado, la notificación del filete se realiza con un delegado nativo de C#:
+
+```cs
+public delegate void MeatEatenDelegate();
+public event MeatEatenDelegate OnMeatEaten;
+
+private void OnTriggerEnter2D(Collider2D other) {
+    if (other.tag == "Player")
+    {
+        OnMeatEaten();
+        Destroy(gameObject);
+    }
+}
+```
+
+Al evento `OnMeatEaten()` se suscriben tanto la oveja como el tronco:
+
+```cs
+meat.OnMeatEaten += FollowPlayer; // En el tronco
+meat.OnMeatEaten += RunAway; // En la oveja
+```
+
+Como resultado, dos objetos independientes escuchan la misma notificación y actúan con sus propias respuestas:
+
+![Common notificacion](./Media/MeatNotifier.gif)
